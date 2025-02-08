@@ -6,9 +6,6 @@ app.use("/hello",(req,res)=>{
     res.send("Hello Hello");
 })
 
-app.use("/test",(req,res)=>{
-    res.send("Hello from the Server!");
-})
 
 //creating server that listens on port 3000
 app.listen(3000,()=>{
