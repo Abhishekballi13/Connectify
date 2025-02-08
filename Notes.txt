@@ -1,0 +1,16 @@
+- when we write npm i express,all the code of express js goes inside node_modules
+- node_modules is a place whenever you install a package all goes here.
+- a dependency of this project gets added in package.json
+- we also have the concept of transitive dependency,that is dependencies of dependency,you can think of like express js is dependent on other
+  dependencies 
+
+4.19.2
+(major(4) | minor(19) | patch(2))
+when we are doing minor change upgrade,they are backward compatible.
+
+- with tilda~ it means to auto upgrade 
+- to lock the version we have package.lock.json,it tells the exact version we are using
+- package.json,it just tells the nomenclature what versioning system should we use
+
+- -g means ,it is installed at global level
+- nodemon automatically refreshes the server,so install that package

@@ -1,0 +1,20 @@
+{
+  "name": "connectify",
+  "version": "1.0.0",
+  "description": "social media for devs",
+  "main": "index.js",
+  "scripts": {
+    "start":"node src/app.js",
+    "dev":"nodemon src/app.js"
+  },
+  "keywords": [
+    "nodejs",
+    "javascript",
+    "backend"
+  ],
+  "author": "Abhishek Dwivedi",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

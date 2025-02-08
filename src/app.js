@@ -1,0 +1,16 @@
+const express = require("express");
+
+const app = express();
+
+app.use("/hello",(req,res)=>{
+    res.send("Hello Hello");
+})
+
+app.use("/test",(req,res)=>{
+    res.send("Hello from the Server!");
+})
+
+//creating server that listens on port 3000
+app.listen(3000,()=>{
+    console.log("Server is listening on port 3000");
+});
