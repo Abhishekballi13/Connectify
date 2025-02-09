@@ -1,16 +1,142 @@
-- when we write npm i express,all the code of express js goes inside node_modules
-- node_modules is a place whenever you install a package all goes here.
-- a dependency of this project gets added in package.json
-- we also have the concept of transitive dependency,that is dependencies of dependency,you can think of like express js is dependent on other
-  dependencies 
+# Notes on Express.js
 
-4.19.2
-(major(4) | minor(19) | patch(2))
-when we are doing minor change upgrade,they are backward compatible.
+## Package Management
+- When we write `npm i express`, all the code of Express.js goes inside `node_modules`.
+- `node_modules` is a place where all installed packages are stored.
+- A dependency of this project gets added in `package.json`.
+- We also have the concept of transitive dependency, which refers to the dependencies of dependencies (e.g., Express.js is dependent on other dependencies).
 
-- with tilda~ it means to auto upgrade 
-- to lock the version we have package.lock.json,it tells the exact version we are using
-- package.json,it just tells the nomenclature what versioning system should we use
+### Versioning
+- **Versioning Format**: `4.19.2` (major(4) | minor(19) | patch(2))
+- Minor changes are backward compatible.
+- Using `~` means to auto-upgrade.
+- To lock the version, we have `package-lock.json`, which tells the exact version we are using.
+- `package.json` specifies the versioning system to be used.
 
-- -g means ,it is installed at global level
-- nodemon automatically refreshes the server,so install that package
+### Global Installation
+- `-g` means it is installed at the global level.
+- `nodemon` automatically refreshes the server, so install that package.
+
+## Dependencies
+- **Definition**: In programming, dependencies are external libraries, frameworks, or tools that your project relies on to work. These are additional pieces of code written by others that your project "depends on" to provide certain functionality, so you don’t have to build everything from scratch.
+
+## Routing in Express.js
+- The order of the routes matters a lot.
+
+### Example Routes
+```javascript
+// This will only handle GET calls to /user
+app.get("/user", (req, res) => {
+    res.send({ firstName: "mutku", lastName: "chutku" });
+});
+
+app.post("/user", (req, res) => {
+    res.send("Data successfully sent to database");
+});
+
+// This will match all HTTP method API calls to /test
+app.use("/test", (req, res) => {
+    res.send("Hello from the Server!");
+});
+```
+
+- In Express, `app.use()` is used to apply middleware or match all requests starting with the specified path. Since `/` matches all routes as a prefix, it gets triggered first, and your other routes (e.g., `/hello` and `/test`) are never reached.
+
+### Wildcards
+- You can use `*` to match any route that starts with or contains a certain prefix, or to match any route entirely.
+```javascript
+app.use("/api/*", (req, res) => {
+    res.send("API Endpoint Accessed!");
+});
+```
+- Example Matches:
+  - `/api/users` → Matches, responds with "API Endpoint Accessed!".
+  - `/api/products/details` → Matches, responds with "API Endpoint Accessed!".
+  - `/api` → Does not match because the wildcard expects something after `/api/`.
+
+## Query Parameters
+- Example URL: `http://localhost:3000/search?category=electronics&price=low`
+```javascript
+app.get('/search', (req, res) => {
+    const { category, price } = req.query;
+    res.send(`Category: ${category}, Price: ${price}`);
+});
+```
+
+## Request Parameters
+
+app.get('/search', (req, res) => {
+  const { category, price } = req.query;
+  res.send(`Category: ${category}, Price: ${price}`);
+});
+
+- req params
+app.get("/user/:userId/:name/:password",(req,res)=>{
+    console.log(req.params);
+    res.send({firstName:"mutku",lastname:"chutku"});
+})
+
+// New Chapter
+- route handler
+- if you keep a route handler empty it will go to infinite loop.
+
+app.use("/user",(req,res,next)=>{
+    //route handler
+})
+
+- next() function calls the next middleware in the stack.
+- if we keep the first middleware empty in the stack and we add next() to it then the next middleware/route handler code will get executed.
+
+app.use("/user",(req,res,next)=>{
+    //route handler
+    //if we keep route handler empty or we dont send a response to the user
+    //it will go into infinite loop
+    console.log("Handling the route user!!");
+    next();
+    res.send("Response");
+},(req,res) => {
+    console.log("Handling the routes user 2!!");
+    res.send("2nd Response!!");
+}
+)
+
+- express tells you can have as many handler you want but response should be send.
+- try this app.use("/route",rH,[rH2,rH3],rH4,rH5)
+
+- What is a middleware ?
+    Middleware in Express.js refers to functions that have access to the request (req) object, 
+    the response (res) object, and the next() function in the application's request-response cycle. 
+
+    - Middleware functions can perform the following tasks:
+    - Execute any code.
+    - Modify the req and res objects.
+    - End the request-response cycle.
+    - Call the next() function to pass control to the next middleware.
+
+- How express Js basically handles request behind the scenes?
+
+
+- difference between app.use and app.all.
+
+- clean way of doing authorization,importance of middleware.
+- Handle Auth middleware for all GET POST,... requests.
+
+        app.use("/admin",(req,res,next)=>{
+            console.log("Admin auth is getting checked");
+            const token = "xyz";
+            const isAdminAuthorized = token === "xyz";
+            if(!isAdminAuthorized){
+                res.status(401).send("Unauthorized access");
+            }
+            else{
+                next();
+            }
+        })
+
+        app.get("/admin/getAllData",(req,res)=>{
+            res.send("All Data send");
+        })
+
+        app.get("/admin/deleteUser",(req,res)=>{
+            res.send("Deleted a user");
+        })
