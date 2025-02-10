@@ -162,6 +162,7 @@ app.use("/user",(req,res,next)=>{
 - installed dotenv package 
 - explore options in a Model.findOneAndUpdate method,explore more about it.
 
+- validations and santizing our data
 - validations on our database.
 - adding custom validation function in our schema
 - adding options while doing update ,and setting validations to true 
@@ -171,3 +172,11 @@ app.use("/user",(req,res,next)=>{
 - data sanitizng : add api validations for each field
 - using validator library which makes validation easy for us
 - explore validator library function and use validator functions for password,email.
+- never trust req.body.
+
+- authentication
+- validate data in Signup Api
+- install bcrypt package
+- Create PasswordHash using bcrypt.hash and save the user encrypted password
+- create login api
+- compare passwords and throw errors if email or password is invalid

@@ -2,22 +2,68 @@ const express = require("express");
 const connectDb = require("./config/database");
 const app = express();
 const {User} = require("./models/user");
+const {validateSignupData,validateLoginData} = require("./utils/validation");
+const bcrypt = require("bcrypt");
 
 //middleware
-//it reads the json objeect ,converts it to javascript object add the js object back to req body.
+//it reads the json object ,converts it to javascript object add the js object back to req body.
 app.use(express.json());
 
-app.post("/signup",async (req,res)=>{    
-    //creating a new instance of this User model
-    const user = new User(req.body);
+//signup api
+app.post("/signup",async (req,res)=>{   
+    try{ 
+        //1. validation of data , 
+        validateSignupData(req);
+
+        const {firstName,lastName,emailId,password} = req.body;
+
+        // 2.Encrypt the password
+        const passwordHash = await bcrypt.hash(password,10);
+        
+        //creating a new instance of this User model
+        const user = new User({
+            firstName,
+            lastName,
+            emailId,
+            password:passwordHash,
+        });
     
-    //data will get saved on db,it will return us a promise
-    try{
+        //data will get saved on db,it will return us a promise
         await user.save();
         res.send("User Added successfully")
     }catch(err){
         res.status(400).send("Error saving the user:"+err.message);
     }
+})
+
+//login api
+app.get("/login",async (req,res)=>{
+   try{
+    validateLoginData(req);
+     const {emailId,password} = req.body;
+     //first checking wether email id is present is database or not
+     //wether there is user or not
+     //then we check the password entered and the one present in db
+     //if both of them are matching then login Successfull
+     const user = await User.findOne({emailId:emailId});
+     if(!user){
+        //dont expose your data by telling email id not present in db
+        // throw new Error("EmailId is not present in DB");
+
+        //just tell invaid credentials
+        throw new Error("Invalid Credentials");
+     }
+     const isPasswordValid = await bcrypt.compare(password,user.password);
+
+     if(isPasswordValid){
+         res.send("Login SuccessFull!!!");
+     }else{
+        throw new Error("Password is not Correct.")
+     }
+
+   }catch(err){
+    res.status(400).send("ERROR : " + err.message);
+   }
 })
 
 //Get user by email
