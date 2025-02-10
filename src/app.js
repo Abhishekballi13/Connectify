@@ -59,14 +59,39 @@ app.delete("/user",async (req,res) => {
 });
 
 //update data of the user
-app.patch("/user",async(req,res) => {
-    const userId = req.body.userId;
+app.patch("/user/:userId",async(req,res) => {
+    const userId = req.params?.userId;
     const data = req.body;
+    // const email = req.body.email;
+
     try{
-      await User.findByIdAndUpdate({_id:userId},data);
+        const ALLOWED_UPDATES = [
+            "userId","photoUrl","about","gender","age","skills"
+        ]
+        //every key in updated object should be there in our allowed_updates array
+        //if it is not then we will not allow to update
+        //if sending random things update will not be allowed
+        const isUpdateAllowed = Object.keys(data).every(k => 
+            ALLOWED_UPDATES.includes(k)
+        );
+    
+        if(!isUpdateAllowed){
+            throw new Error("Update is not allowed.")
+        }
+
+    //updating data by id
+    //setting options in third argument in findByUpdate
+    //returnDocument will give us the old data before updation
+    //run validators will run validation while doing update
+      const user = await User.findByIdAndUpdate({_id:userId},data,{
+        returnDocument:"after",
+        runValidators:true,
+      });
+    //updating data by email id
+    // await User.findOneAndUpdate({emailId:email},data);
       res.send("User updated successfully.");
     }catch(err){
-      res.status(400).send("Something wrong happened.")
+      res.status(400).send("Update failed:"+err.message);
     }
 })
 

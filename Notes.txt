@@ -140,3 +140,32 @@ app.use("/user",(req,res,next)=>{
         app.get("/admin/deleteUser",(req,res)=>{
             res.send("Deleted a user");
         })
+- write a dummy auth middleware for admin
+- write a dummy auth middleware for all user routes,except /user/login
+- Error Handling using a app.use("/",(err,req,res,next)={})
+
+- connecting application to database
+- installing mongoose library
+- connect your application to the database "Connection-url"/connectify
+- call the connection function in app.js
+- listening on port ,only when database connection is established
+
+- creating schema
+- first we create schema then we create model out of it ,then we keep creating instances as per our need.
+- database -> collection -> document
+
+- JS object vs JSON (difference)
+- Add the express.json middleware to your app
+- Make your signUp API 
+
+- Added .env file for keeping secrets
+- installed dotenv package 
+- explore options in a Model.findOneAndUpdate method,explore more about it.
+
+- validations on our database.
+- adding custom validation function in our schema
+- adding options while doing update ,and setting validations to true 
+- adding timestamps in our schema
+- restricted updates
+- add api level validations on patch requests and signup post api
+- add api validations for each field
