@@ -168,4 +168,6 @@ app.use("/user",(req,res,next)=>{
 - adding timestamps in our schema
 - restricted updates
 - add api level validations on patch requests and signup post api
-- add api validations for each field
+- data sanitizng : add api validations for each field
+- using validator library which makes validation easy for us
+- explore validator library function and use validator functions for password,email.
