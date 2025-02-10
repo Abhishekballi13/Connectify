@@ -1,28 +1,41 @@
 const express = require("express");
-
+const connectDb = require("./config/database");
 const app = express();
+const {User} = require("./models/user");
 
-const {adminAuth, userAuth} = require("./middlewares/auth");
+//middleware
+//it reads the json objeect ,converts it to javascript object add the js object back to req body.
+app.use(express.json());
 
-//app.use("/route",rH,[rH2,rH3],rH4,rH5);
-// GET /user => midddleware chain => request handler
-
-//Handle Auth middleware for all GET POST,... requests.
-app.use("/admin",adminAuth);
-
-app.get("/user",userAuth,(req,res)=>{
-    res.send("User data send");
+app.post("/signup",async (req,res)=>{
+    console.log(req.body);
+    
+    //creating a new instance of this User model
+    const user = new User(req.body);
+    
+    //data will get saved on db,it will return us a promise
+    try{
+        await user.save();
+        res.send("User Added successfully")
+    }catch(err){
+        res.status(400).send("Error saving the user:"+err.message);
+    }
 })
 
- app.get("/admin/getAllData",(req,res)=>{
-    res.send("All Data send");
- })
 
- app.get("/admin/deleteUser",(req,res)=>{
-    res.send("Deleted a user");
- })
+connectDb().then(()=>{
+    console.log("Database Connected....");
+    //listening when our databse in connected successfully 
+    //so that whenever user hits any api or service that involves some db ,there is no problem
+    app.listen("7777",()=>{
+        console.log("listening on port 7777");
+    })
+})
+.catch((err) => {
+    console.log("Database cannot be established.")
+})
 
-//creating server that listens on port 3000
-app.listen(3000,()=>{
-    console.log("Server is listening on port 3000");
-});
+
+
+
+
