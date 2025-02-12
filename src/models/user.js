@@ -1,5 +1,7 @@
+const jwt = require("jsonwebtoken");
 const mongoose =  require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
     firstName:{
@@ -26,6 +28,11 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true,
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("Enter a Strong Password : "+value);
+            }
+        }
     },
     age:{
         type:Number,
@@ -33,11 +40,15 @@ const userSchema = new mongoose.Schema({
     },
     gender:{
         type:String,
-        validate(value){
-            if(!["male","female","others"].includes(value)){
-                throw new Error("Gender data is not valid");
-            }
-        },
+        enum:{
+            values:["male","female","other"],
+            message:`{VALUE} is not a  valid gender type.`
+        }
+        // validate(value){
+        //     if(!["male","female","others"].includes(value)){
+        //         throw new Error("Gender data is not valid");
+        //     }
+        // },
     },
     photoUrl:{
         type:String,
@@ -65,6 +76,26 @@ const userSchema = new mongoose.Schema({
     timestamps:true,
   }
 )
+
+//dont use arrow function here,it will break things up
+userSchema.methods.getJWT = async function(){
+    //whenever you are creating instances of user model
+    //when we are refering to this over here,it will represent that parrticular instance
+    // this is why arrow fn will not work
+   const user = this;
+   const token = await jwt.sign({_id:user._id},"DEV@Connectify$790",{
+     expiresIn:"7d",
+   });
+   return token;
+}
+
+userSchema.methods.checkPassword = async function(passwordInputByUser){
+    const user = this;
+    const passwordHash = user.password;
+    //you cannot interchange both of them,passwordInputByUser,passwordHash inside compare
+    const isPasswordValid = await bcrypt.compare(passwordInputByUser,passwordHash);
+    return isPasswordValid;
+}
 
 const User = mongoose.model("User",userSchema);
 
