@@ -239,3 +239,10 @@ skip = (page-1) * limit;
 
 - .skip() and .limit() functions in mongodb.
 
+
+- response should be standard like try to send in json.
+- create a object attach data ,message etc.
+
+
+- using express cors middleware
+- adding cors options,for whitelisting domain name

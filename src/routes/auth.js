@@ -62,7 +62,7 @@ authRouter.post("/login",async (req,res)=>{
  
          //Add the token to cookie and send the response back to user
           res.cookie("token",token,{expires:new Date(Date.now() + 7*24*3600000)});
-          res.send("Login SuccessFull!!!");
+          res.send(user);
       }else{
          throw new Error("Password is not Correct.")
       }

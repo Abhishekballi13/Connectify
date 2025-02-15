@@ -76,6 +76,7 @@ userRouter.get("/feed",userAuth,async (req,res)=>{
         //parsing the page number to int as they will be in string,and if page is not there then assume it to be 1
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
+        limit = limit>50 ? 50:limit;
         const skip = (page-1)*limit;
 
         //finding all the connection request,that either i have send or received

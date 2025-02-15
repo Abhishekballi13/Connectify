@@ -69,6 +69,7 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async (req,res) =>
     }
 })
 
+//review connection request
 requestRouter.post("/request/review/:status/:requestId",userAuth,async (req,res)=>{
     try{
         const loggedInUser = req.user;

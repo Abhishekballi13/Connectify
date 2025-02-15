@@ -2,8 +2,14 @@ const express = require("express");
 const connectDb = require("./config/database");
 const app = express();
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 //middleware
+//adding cors options
+app.use(cors({
+    origin : "https://localhost:5173",
+    credentials : true,
+}));
 //it reads the json object ,converts it to javascript object add the js object back to req body.
 app.use(express.json());
 //adding cookie parser middleware
