@@ -246,3 +246,43 @@ skip = (page-1) * limit;
 
 - using express cors middleware
 - adding cors options,for whitelisting domain name
+
+- Deployment
+- allow ec2 instance public ip on mongodb server or simply allow traffic from anywhere 0.0.0.0/0
+- we need a process manager that will keep running,the process(npm start) will 24*7 
+- install pm-2 globally 
+  npm i pm-2 -g (dont forget to add -g flag to install it globally)
+- pm2 start npm -- start
+- pm2 logs , to check the logs
+- pm2 flush logs , to delete the logs
+- pm2 list will show the list of processes started by pm2
+- pm2 stop (name of your process),to stop the process
+- pm2 delete (name of your process),to delete the process
+- starting a npm process and giving custom name using, pm2 start npm --name "connectify-backend" -- start
+
+ Frontend = http://3.95.10.76/
+ Backend = http://3.95.10.76:7777/
+
+ Frontend = connectify.com
+ Backend = connectify.com:7777 => connectify.com/api ,mapping port number to this path
+
+# Nginx config
+- nginx proxy path
+- any request goes to your server via nginx 
+- sudo nano /etc/nginx/sites-available/default,cahnge the file here
+- these are the changes that you have make
+
+        server_name 3.95.10.76;
+
+        location /api/ {
+                proxy_pass http://localhost:7777/;  # Change port to 7777
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+            }
+
+- now your http://3.95.10.76:7777/ => http://3.95.10.76/api (maps to)
+
+

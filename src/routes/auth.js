@@ -13,7 +13,7 @@ authRouter.post("/signup",async (req,res)=>{
         //1. validation of data , 
         validateSignupData(req);
 
-        const {firstName,lastName,emailId,password,skills} = req.body;
+        const {firstName,lastName,emailId,password,skills,photoUrl} = req.body;
 
         // 2.Encrypt the password
         const passwordHash = await bcrypt.hash(password,10);
@@ -25,11 +25,19 @@ authRouter.post("/signup",async (req,res)=>{
             emailId,
             password:passwordHash,
             skills,
+            photoUrl,
         });
-    
+
         //data will get saved on db,it will return us a promise
-        await user.save();
-        res.send("User Added successfully")
+        const savedUser = await user.save();
+        const token = await user.getJWT();
+ 
+         //Add the token to cookie 
+        res.cookie("token",token,{expires:new Date(Date.now() + 7*24*3600000)});
+        
+        //send the response back to user
+        res.json({message:"User Added Successfully!",data:savedUser});
+
     }catch(err){
         res.status(400).send("Error saving the user:"+err.message);
     }

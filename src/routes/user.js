@@ -75,7 +75,7 @@ userRouter.get("/feed",userAuth,async (req,res)=>{
         //pagination
         //parsing the page number to int as they will be in string,and if page is not there then assume it to be 1
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        let limit = parseInt(req.query.limit) || 10;
         limit = limit>50 ? 50:limit;
         const skip = (page-1)*limit;
 
@@ -101,7 +101,6 @@ userRouter.get("/feed",userAuth,async (req,res)=>{
             ],
             _id : {$nin: Array.from(hideUsersFromFeed)}
         }).select(USER_SAFE_DATA).skip(skip).limit(limit);
-
         res.send(users);
     }catch(err){
         res.status(400).json({ message: err.message});
