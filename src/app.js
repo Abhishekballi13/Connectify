@@ -7,7 +7,7 @@ const cors = require("cors");
 //middleware
 //adding cors options
 app.use(cors({
-    origin : ["http://localhost:5173","http://3.95.10.76/"],
+    origin : ["http://localhost:5173","http://52.54.226.144/"],
     credentials : true,
 }));
 //it reads the json object ,converts it to javascript object add the js object back to req body.
