@@ -65,7 +65,7 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async (req,res) =>
             "A new friend request from " + req.user.firstName,
             req.user.firstName+ " is " + status + " in " + toUser.firstName
         );
-        console.log(emailRes);
+        // console.log(emailRes);
 
         // console.log("Sending a connection request");
         res.json({
