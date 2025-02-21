@@ -4,6 +4,9 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
+const dotenv = require("dotenv");
+dotenv.config();
+
 //middleware
 //adding cors options
 app.use(cors({
