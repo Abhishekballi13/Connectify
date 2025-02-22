@@ -12,6 +12,8 @@ dotenv.config();
 app.use(cors({
     origin : ["http://localhost:5173","http://52.54.226.144/","https://connectify-web-bice.vercel.app/"],
     credentials : true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }));
 //it reads the json object ,converts it to javascript object add the js object back to req body.
 app.use(express.json());
