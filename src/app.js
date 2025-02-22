@@ -13,7 +13,7 @@ dotenv.config();
 //middleware
 //adding cors options
 app.use(cors({
-    origin : ["http://localhost:5173","http://52.54.226.144/","https://connectify-web-bice.vercel.app/"],
+    origin : ["http://localhost:5173","http://52.54.226.144/","https://connectify-web-bice.vercel.app"],
     credentials : true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
 }));
