@@ -286,3 +286,4 @@ skip = (page-1) * limit;
 - now your http://3.95.10.76:7777/ => http://3.95.10.76/api (maps to)
 
 
+- modify the base_url in constants.js in frontend  to /api

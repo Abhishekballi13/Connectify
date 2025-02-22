@@ -10,7 +10,7 @@ dotenv.config();
 //middleware
 //adding cors options
 app.use(cors({
-    origin : ["http://localhost:5173","http://52.54.226.144/"],
+    origin : ["http://localhost:5173","http://52.54.226.144/","https://connectify-web-bice.vercel.app/"],
     credentials : true,
 }));
 //it reads the json object ,converts it to javascript object add the js object back to req body.
@@ -113,7 +113,7 @@ connectDb().then(()=>{
     console.log("Database Connected....");
     //listening when our databse in connected successfully 
     //so that whenever user hits any api or service that involves some db ,there is no problem
-    app.listen("7777",()=>{
+    app.listen(process.env.PORT,()=>{
         console.log("listening on port 7777");
     })
 })
