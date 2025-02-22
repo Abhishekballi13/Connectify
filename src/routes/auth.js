@@ -33,7 +33,7 @@ authRouter.post("/signup",async (req,res)=>{
         const token = await user.getJWT();
  
          //Add the token to cookie 
-        res.cookie("token",token,{expires:new Date(Date.now() + 7*24*3600000),sameSite:"none",httpOnly:true,secure:true,});
+        res.cookie("token",token,{sameSite:"none",httpOnly:true,secure:true,expires:new Date(Date.now() + 7*24*3600000),});
         
         //send the response back to user
         res.json({message:"User Added Successfully!",data:savedUser});
