@@ -69,7 +69,7 @@ authRouter.post("/login",async (req,res)=>{
          const token = await user.getJWT();
  
          //Add the token to cookie and send the response back to user
-          res.cookie("token",token,{expires:new Date(Date.now() + 7*24*3600000)});
+          res.cookie("token",token,{sameSite:"None",httpOnly:true,secure:true,expires:new Date(Date.now() + 7*24*3600000)});
           res.send(user);
       }else{
          throw new Error("Password is not Correct.")
