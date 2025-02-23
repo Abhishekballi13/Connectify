@@ -72,6 +72,9 @@ paymentRouter.post("/payment/webhook",async (req,res) => {
 
     //Update the user as premium
     const user = await User.findOne({_id : payment.userId});
+    if(!user){
+        res.status(401).json({message:"user not found"});
+    }
     user.isPremium = true;
     user.membershipType = payment.notes.membershipType;
     await user.save();
