@@ -70,7 +70,14 @@ const userSchema = new mongoose.Schema({
               throw new Error("Cannot add more than 10 skills");
             }
         }
-    }
+    },
+    isPremium:{
+        type:Boolean,
+        default:false,
+    },
+    membershipType:{
+        type:String,
+    },
   },
   {
     timestamps:true,
