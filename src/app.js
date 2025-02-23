@@ -26,6 +26,7 @@ const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/requests");
 const userRouter = require("./routes/user");
+const paymentRouter = require("./routes/payment");
 
 //suppose a user comes and hits /signup then first it will come here
 // "/" means it matches all the routes it will first go to authRouter then it will check and match if singup matches there
@@ -34,6 +35,7 @@ app.use("/",authRouter);
 app.use("/",profileRouter);
 app.use("/",requestRouter);
 app.use("/",userRouter);
+app.use("/",paymentRouter);
 
 
 
