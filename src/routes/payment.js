@@ -50,7 +50,6 @@ paymentRouter.post("/payment/create",userAuth, async (req,res) => {
 //creating payment webhook,we dont require userAuth here
 paymentRouter.post("/payment/webhook",async (req,res) => {
     try{
-        console.log("webhook called");
       const webhookSignature = req.get("X-Razorpay-Signature");
       
       const isWebhookValid = validateWebhookSignature(
@@ -73,10 +72,6 @@ paymentRouter.post("/payment/webhook",async (req,res) => {
 
     //Update the user as premium
     const user = await User.findOne({_id : payment.userId});
-    if(!user){
-        console.log("User not found");
-    }
-    console.log("working");
     console.log(user);
     user.isPremium = true;
     user.membershipType = payment.notes.membershipType;
@@ -96,6 +91,16 @@ paymentRouter.post("/payment/webhook",async (req,res) => {
     }catch(err){
         res.status(500).json({message : err.message});
     }
+})
+
+//
+paymentRouter.get("/premium/verify",userAuth,async (req,res) => {
+    //be careful if you are dealing with mongo object or normal object
+    const user = req.user.toJSON();
+    if(user.isPremium){
+        return res.json({isPremium:true});
+    }
+    return res.json({isPremium:false});
 })
 
 module.exports = paymentRouter;
