@@ -14,7 +14,9 @@ const initializeSocket = (server) => {
   
 const io = socket(server,{
     cors: { 
-        origin: ["http://localhost:5173","https://www.connectify.icu"]
+        origin: ["http://localhost:5173","https://www.connectify.icu"],
+        credentials : true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     },
 })
 
