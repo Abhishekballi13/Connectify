@@ -14,7 +14,7 @@ const initializeSocket = (server) => {
   
 const io = socket(server,{
     cors: { 
-        origin: ["http://localhost:5173","http://52.54.226.144"]
+        origin: ["http://localhost:5173","https://connectify.icu"]
     },
 })
 
@@ -36,7 +36,7 @@ io.on("connection",(socket) => {
         const roomId = getSecretRoomId(userId,targetUserId);
         try{
             //server sending the message
-  
+         
         //   ConnectionRequestModel.findOne({
         //     fromUserId:userid,
         //     toUserId:targetUserId,
