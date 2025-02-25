@@ -3,6 +3,8 @@ const connectDb = require("./config/database");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const http = require("http");
+const initializeSocket = require("./utils/socket");
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -27,6 +29,8 @@ const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/requests");
 const userRouter = require("./routes/user");
 const paymentRouter = require("./routes/payment");
+const chatRouter = require("./routes/chat");
+
 
 //suppose a user comes and hits /signup then first it will come here
 // "/" means it matches all the routes it will first go to authRouter then it will check and match if singup matches there
@@ -36,9 +40,13 @@ app.use("/",profileRouter);
 app.use("/",requestRouter);
 app.use("/",userRouter);
 app.use("/",paymentRouter);
+app.use("/",chatRouter);
 
+//creating server using http and this app is express app we made
+//we will do server.listen instead of app.listen,dont forget to change it to server.listen
+const server = http.createServer(app);
 
-
+initializeSocket(server);
 
 //Get user by email
 // app.get("/user",async (req,res)=>{
@@ -119,7 +127,7 @@ connectDb().then(()=>{
     console.log("Database Connected....");
     //listening when our databse in connected successfully 
     //so that whenever user hits any api or service that involves some db ,there is no problem
-    app.listen(process.env.PORT,()=>{
+    server.listen(process.env.PORT,()=>{
         console.log("listening on port 7777");
     })
 })
