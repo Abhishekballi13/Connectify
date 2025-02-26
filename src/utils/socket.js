@@ -17,7 +17,6 @@ const io = socket(server,{
         origin: ["https://www.connectify.icu","http://localhost:5173"],
         credentials : true,
     },
-    transports: ["websocket", "polling"],
 })
 
 //addding connection,or listening to connections
