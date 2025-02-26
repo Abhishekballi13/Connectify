@@ -18,6 +18,7 @@ app.use(cors({
     origin : ["http://localhost:5173","http://52.54.226.144/","https://connectify.icu","https://www.connectify.icu"],
     credentials : true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Authorization", "X-CSRF-Token", "X-Requested-With", "Accept", "Accept-Version", "Content-Length", "Content-MD5", "Content-Type", "Date", "X-Api-Version"],
 }));
 //it reads the json object ,converts it to javascript object add the js object back to req body.
 app.use(express.json());
