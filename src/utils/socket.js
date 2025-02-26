@@ -14,11 +14,10 @@ const initializeSocket = (server) => {
   
 const io = socket(server,{
     cors: { 
-        origin: ["https://www.connectify.icu","http://localhost:5173","http://52.54.226.144/","https://connectify.icu"],
+        origin: ["https://www.connectify.icu","http://localhost:5173"],
         credentials : true,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-        allowedHeaders: ["Authorization", "X-CSRF-Token", "X-Requested-With", "Accept", "Accept-Version", "Content-Length", "Content-MD5", "Content-Type", "Date", "X-Api-Version"],
     },
+    transports: ["websocket", "polling"],
 })
 
 //addding connection,or listening to connections
