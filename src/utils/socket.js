@@ -14,7 +14,7 @@ const initializeSocket = (server) => {
   
 const io = socket(server,{
     cors: { 
-        origin: "https://www.connectify.icu",
+        origin: ["https://www.connectify.icu","https://connectify.icu"],
         credentials : true,
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     },
@@ -22,7 +22,7 @@ const io = socket(server,{
 
 //addding connection,or listening to connections
 //whenever you will receive the connection ,these handlers will be called
-io.on("connection",(socket) => {
+io.on("connection",(socket) => { 
     //Handle events
     
     //different types of handlers
