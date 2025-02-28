@@ -3,6 +3,8 @@ const crypto = require("crypto");
 const { Chat } = require("../models/chat");
 const ConnectionRequestModel = require("../models/connectionRequest");
 
+
+
 const getSecretRoomId = (userId,targetUserId) => {
    return crypto
    .createHash("sha256")
@@ -19,6 +21,8 @@ const io = socket(server,{
     },
 })
 
+const onlineUsers  = new Map();
+
 //addding connection,or listening to connections
 //whenever you will receive the connection ,these handlers will be called
 io.on("connection",(socket) => { 
@@ -31,6 +35,20 @@ io.on("connection",(socket) => {
     //    console.log("Joining room : " + roomId);
        socket.join(roomId);
     }) 
+
+    socket.on("userOnline", ({ userId }) => {
+      if (userId) {
+          onlineUsers.set(userId, socket.id);
+          io.emit("updateOnlineStatus", { userId, isOnline: true });
+      }
+  });
+
+  socket.on("userOffline", ({ userId }) => {
+    if (userId) {
+        onlineUsers.delete(userId);
+        io.emit("updateOnlineStatus", { userId, isOnline: false });
+    }
+});
 
     socket.on("sendMessage",async ({firstName,lastName,userId,targetUserId,text})=>{
         //Save message to database
@@ -68,7 +86,22 @@ io.on("connection",(socket) => {
     })
 
     socket.on("disconnect",()=>{
-       
+      // let disconnectedUserId = null;
+
+      // // Find the userId associated with this socket
+      // for (const [userId, socketId] of onlineUsers.entries()) {
+      //     if (socketId === socket.id) {
+      //         disconnectedUserId = userId;
+      //         break;
+      //     }
+      // }
+
+      // if (disconnectedUserId) {
+      //     onlineUsers.delete(disconnectedUserId);
+      //     io.emit("updateOnlineStatus", { userId: disconnectedUserId, isOnline: false });
+      // }
+
+      // console.log("A user disconnected:", socket.id);
     })
 })
 
