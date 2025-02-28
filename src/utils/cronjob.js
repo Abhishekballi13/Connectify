@@ -2,9 +2,11 @@ const cron = require("node-cron");
 const {subDays, startOfDay, endOfDay} = require("date-fns");
 const sendEmail = require("./sendEmail");
 const ConnectionRequestModel = require("../models/connectionRequest")
+
 //star represents second ,minute, hour, day of month, month, day of week
 // * * * * * this will run every minute
 
+//this job will run at 3 50 AM every day
 cron.schedule("50 03 * * *",async ()=>{
     console.log("Hello, world!"+new Date());
     //send email to all people who got requests  the previous day
@@ -32,6 +34,7 @@ cron.schedule("50 03 * * *",async ()=>{
        //but if you have 100000 ids then it will not be efficient,it is blocking ,synchronous 
        //so you have to implement something else like sending bulk emails throgh aws ses
        //or making your own queues and send email inside batches.
+       //learn about bee queue and bull ,bullmq
        for(const email of listOfEmails){
          try {
           const res = await sendEmail.run(
