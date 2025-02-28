@@ -21,7 +21,7 @@ const io = socket(server,{
     },
 })
 
-const onlineUsers  = new Map();
+let onlineUsers  = new Map();
 
 //addding connection,or listening to connections
 //whenever you will receive the connection ,these handlers will be called
@@ -44,6 +44,7 @@ io.on("connection",(socket) => {
 
   socket.on("userOffline", ({ userId }) => {
         onlineUsers.delete(userId);
+        io.emit("updateOnlineStatus", {status : false});
 });
 
     socket.on("sendMessage",async ({firstName,lastName,userId,targetUserId,text})=>{
