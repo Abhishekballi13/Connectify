@@ -36,18 +36,14 @@ io.on("connection",(socket) => {
        socket.join(roomId);
     }) 
 
-    socket.on("userOnline", ({ userId }) => {
-      if (userId) {
-          onlineUsers.set(userId, socket.id);
-          io.emit("updateOnlineStatus", { userId, isOnline: true });
-      }
+    socket.on("userOnline", ({ userId ,targetUserId}) => {
+          onlineUsers.set(userId,true);
+          const status = onlineUsers.has(targetUserId) ? onlineUsers.get(targetUserId) : false;
+          io.emit("updateOnlineStatus", {status : status});
   });
 
   socket.on("userOffline", ({ userId }) => {
-    if (userId) {
         onlineUsers.delete(userId);
-        io.emit("updateOnlineStatus", { userId, isOnline: false });
-    }
 });
 
     socket.on("sendMessage",async ({firstName,lastName,userId,targetUserId,text})=>{
