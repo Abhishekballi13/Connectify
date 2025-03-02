@@ -15,7 +15,7 @@ dotenv.config();
 //middleware
 //adding cors options
 app.use(cors({
-    origin : ["http://localhost:5173","http://52.54.226.144/","https://connectify.icu","https://www.connectify.icu"],
+    origin : ["http://localhost:5173","https://www.connectify.icu","http://52.54.226.144/","https://connectify.icu"],
     credentials : true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Authorization", "X-CSRF-Token", "X-Requested-With", "Accept", "Accept-Version", "Content-Length", "Content-MD5", "Content-Type", "Date", "X-Api-Version"],

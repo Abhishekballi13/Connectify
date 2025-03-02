@@ -29,7 +29,25 @@ io.on("connection",(socket) => {
     //Handle events
     
     //different types of handlers
-    socket.on("joinChat",({userId,targetUserId})=>{
+    socket.on("joinChat",async ({userId,targetUserId})=>{
+       //checking wether target user is connected to user or not
+       //if not then they cannot chat.
+       //using the or query to check relation user->targetUser targetUser->user
+       const targetUser = await ConnectionRequestModel.findOne({
+        $or:[
+          
+          {fromUserId : userId,
+        toUserId : targetUserId,
+        status : "accepted"},
+        
+        {fromUserId : targetUserId,
+          toUserId : userId,
+          status : "accepted"},
+        ]
+       })
+       if(!targetUser){
+        socket.emit("error",{errorMessage : "You are not connected to this user !!!"})
+       } 
        //you create a seperate room,this room should have a seperate id
        const roomId = getSecretRoomId(userId,targetUserId);
     //    console.log("Joining room : " + roomId);
@@ -51,13 +69,6 @@ io.on("connection",(socket) => {
         //Save message to database
         const roomId = getSecretRoomId(userId,targetUserId);
         try{
-            //server sending the message
-         
-        //   ConnectionRequestModel.findOne({
-        //     fromUserId:userid,
-        //     toUserId:targetUserId,
-        //     status:"accepted",
-        //  })
 
           let chat = await Chat.findOne({
             //where all the participants are in the room
@@ -83,22 +94,7 @@ io.on("connection",(socket) => {
     })
 
     socket.on("disconnect",()=>{
-      // let disconnectedUserId = null;
-
-      // // Find the userId associated with this socket
-      // for (const [userId, socketId] of onlineUsers.entries()) {
-      //     if (socketId === socket.id) {
-      //         disconnectedUserId = userId;
-      //         break;
-      //     }
-      // }
-
-      // if (disconnectedUserId) {
-      //     onlineUsers.delete(disconnectedUserId);
-      //     io.emit("updateOnlineStatus", { userId: disconnectedUserId, isOnline: false });
-      // }
-
-      // console.log("A user disconnected:", socket.id);
+     
     })
 })
 
