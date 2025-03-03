@@ -107,6 +107,7 @@ userRouter.get("/feed",userAuth,async (req,res)=>{
     }
 })
 
+//last seen of user
 userRouter.get("/user/last-seen/:userId",async(req,res) => {
     try{
        const user = await User.findById(req.params.userId);

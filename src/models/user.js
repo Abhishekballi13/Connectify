@@ -85,7 +85,11 @@ const userSchema = new mongoose.Schema({
     lastSeen:{
         type:Date,
         default:null,
-    }
+    },
+    isAdmin:{
+        type:Boolean,
+        default:false,
+    },
   },
   {
     timestamps:true,
@@ -98,7 +102,7 @@ userSchema.methods.getJWT = async function(){
     //when we are refering to this over here,it will represent that parrticular instance
     // this is why arrow fn will not work
    const user = this;
-   const token = await jwt.sign({_id:user._id},"DEV@Connectify$790",{
+   const token = await jwt.sign({_id:user._id},process.env.JWT_TOKEN,{
      expiresIn:"7d",
    });
    return token;

@@ -80,6 +80,37 @@ authRouter.post("/login",async (req,res)=>{
     }
  })
 
+//login for admin
+authRouter.post("/admin/login",async(req,res)=>{
+    try{
+     validateLoginData(req);
+     const {emailId,password} = req.body;
+
+     const user = await User.findOne({emailId});
+     if(!user){
+        throw new Error("Invalid Credentials");
+     }
+
+     const isPasswordValid = await user.checkPassword(password);
+     if(!isPasswordValid) throw new Error("Password is not Correct");
+
+     if(!user.isAdmin) throw new Error("You dont have admin access");
+
+     const token = await user.getJWT();
+
+     res.cookie("adminToken",token,{
+        sameSite:"None",
+        httpOnly:true,
+        secure:true,
+        expires:new Date(Date.now()+2*24*3600000),
+     });
+
+     res.send(user);
+    }catch(err){
+      res.status(400).send("ERROR:"+err.message);
+    }
+})
+
 //logout api
 authRouter.post("/logout",async(req,res)=>{
     //set the token to null (remove the token from cookie),and expire at this point of time

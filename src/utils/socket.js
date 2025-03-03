@@ -110,6 +110,14 @@ io.on("connection",(socket) => {
 
     socket.on("messageSeen",async({userId,targetUserId})=>{
         try{
+          //basically this query filters
+          //if both targetuser and user are the participants of the chat
+          //then checks if senderId is equal to targetUserId this ensures that it is coming from targetUser
+          //then we update,$set updates based on matching condition 
+          //$[] is the array filter operator, which updates all elements inside messages.
+          // This means that every message in the chat that was sent by targetUserId will have its status changed to "seen"
+          // {new : true} , Returns the updated document instead of the old one after applying the changes.
+
           const chat = await Chat.findOneAndUpdate(
             {participants : { $all : [userId,targetUserId] }, 
                "messages.senderId" : targetUserId },

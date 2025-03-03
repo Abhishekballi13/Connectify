@@ -10,7 +10,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 //we are not scheduling any cron job so commenting it out
-// require("./utils/cronjob");
+require("./utils/cronjob");
 
 //middleware
 //adding cors options
@@ -31,6 +31,7 @@ const requestRouter = require("./routes/requests");
 const userRouter = require("./routes/user");
 const paymentRouter = require("./routes/payment");
 const chatRouter = require("./routes/chat");
+const adminRouter = require("./routes/admin");
 
 
 //suppose a user comes and hits /signup then first it will come here
@@ -42,6 +43,7 @@ app.use("/",requestRouter);
 app.use("/",userRouter);
 app.use("/",paymentRouter);
 app.use("/",chatRouter);
+app.use("/",adminRouter);
 
 //creating server using http and this app is express app we made
 //we will do server.listen instead of app.listen,dont forget to change it to server.listen
