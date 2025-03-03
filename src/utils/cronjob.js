@@ -53,7 +53,7 @@ const { Chat } = require("../models/chat");
 //     }
 // })
 
-
+//change the time of cron job
 cron.schedule("29 23 * * *", async () => {
   try {
     const desiredDay = subDays(new Date(), 1); // 1 day ago
@@ -61,14 +61,10 @@ cron.schedule("29 23 * * *", async () => {
 
     console.log("Attempting to delete messages before:", new Date(desiredDayStart));
 
-    // Debugging: Log messages that should be deleted
-    const oldMessages = await Chat.find(
-      { "messages.createdAt": { $lt: desiredDayStart } },
-      { "messages.createdAt": 1 }
-    );
-    console.log("Old messages found:", oldMessages);
-
     // Perform deletion
+  //   $pull is a MongoDB operator used to remove elements from an array based on a condition.
+  //  In this case, it removes all messages where createdAt < desiredDayStart.
+  //  The messages array inside each Chat document is updated, and all old messages are deleted.
     const result = await Chat.updateMany(
       { "messages.createdAt": { $lt: desiredDayStart } },
       { $pull: { messages: { createdAt: { $lt: desiredDayStart } } } }
