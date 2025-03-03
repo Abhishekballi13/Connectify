@@ -107,4 +107,16 @@ userRouter.get("/feed",userAuth,async (req,res)=>{
     }
 })
 
+userRouter.get("/user/last-seen/:userId",async(req,res) => {
+    try{
+       const user = await User.findById(req.params.userId);
+       if(!user){
+         return res.status(400).send({message:"User not found"});
+       }
+       res.json({lastSeen:user.lastSeen});
+    }catch(err){
+        res.status(500).json({message:"Server Error"});
+    }
+})
+
 module.exports = userRouter;

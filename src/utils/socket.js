@@ -2,6 +2,7 @@ const socket = require("socket.io");
 const crypto = require("crypto");
 const { Chat } = require("../models/chat");
 const ConnectionRequestModel = require("../models/connectionRequest");
+const { User } = require("../models/user");
 
 
 
@@ -54,14 +55,24 @@ io.on("connection",(socket) => {
        socket.join(roomId);
     }) 
 
-    socket.on("userOnline", ({ userId ,targetUserId}) => {
-          onlineUsers.set(userId,true);
-          const status = onlineUsers.has(targetUserId) ? onlineUsers.get(targetUserId) : false;
+    socket.on("userOnline", async ({ userId ,targetUserId}) => {
+          //storing socket.id ,When a user connects to your WebSocket server, 
+          // each connection gets a unique socket.id assigned by socket.io.
+          onlineUsers.set(userId,socket.id);
+ 
+          //update the users online status in database
+          await User.findByIdAndUpdate(userId,{isOnline:true});
+
+          const status = onlineUsers.has(targetUserId) ? true : false;
           io.emit("updateOnlineStatus", {status : status});
   });
 
-  socket.on("userOffline", ({ userId }) => {
+  socket.on("userOffline", async ({ userId }) => {
         onlineUsers.delete(userId);
+
+        // Update lastSeen timestamp in the database when user goes offline
+        await User.findByIdAndUpdate(userId,{isOnline:false,lastSeen:new Date()});
+
         io.emit("updateOnlineStatus", {status : false});
 });
 
@@ -84,17 +95,49 @@ io.on("connection",(socket) => {
           chat.messages.push({
             senderId:userId,
             text,
+            status:"sent",
           })
 
           await chat.save();
-          io.to(roomId).emit("messageReceived",{firstName,lastName,text});
+          //extracting last message from chats of current user.
+          //then extracting the message id and passing on
+          const savedMessage = chat.messages[chat?.messages.length-1];
+          io.to(roomId).emit("messageReceived",{senderId: userId,firstName,lastName,text,messageId:savedMessage._id,status:"sent"});
         }catch(err){
             console.log(err);
         }
     })
 
-    socket.on("disconnect",()=>{
-     
+    socket.on("messageSeen",async({userId,targetUserId})=>{
+        try{
+          const chat = await Chat.findOneAndUpdate(
+            {participants : { $all : [userId,targetUserId] }, 
+               "messages.senderId" : targetUserId },
+            {$set : {"messages.$[].status":"seen"}},
+            {new : true}
+          );
+
+          if(chat){
+            io.to(onlineUsers.get(targetUserId)).emit("updateMessageStatus",{
+              status:"seen"
+            });
+          }
+        }catch(err){
+           console.log("Error updating seen status:",error);
+        }
+    })
+
+    socket.on("disconnect",async ()=>{
+      //just checking for all the online users ,wether there is any user
+      //which has socket id same as the socket id which is getting disconnected
+      //then we delete it from the online users.
+       const userId = [...onlineUsers.keys()].find(id => onlineUsers.get(id) === socket.id);
+
+       if(userId){
+        onlineUsers.delete(userId);
+        await User.findByIdAndUpdate(userId,{isOnline:false,lastSeen: new Date()});
+       }
+       io.emit("updateOnlineStatus", {status : false});
     })
 })
 
